@@ -12,6 +12,7 @@ import (
 
 type ConsoleConfig struct {
 	Enable  bool   `json:"enable"`
+	Category string `json:"category"`
 	Level   string `json:"level"`
 	Pattern string `json:"pattern"`
 }
@@ -53,7 +54,7 @@ type SocketConfig struct {
 
 // LogConfig presents json log config struct
 type LogConfig struct {
-	Console *ConsoleConfig  `json:"console"`
+	Console []*ConsoleConfig  `json:"console"`
 	Files   []*FileConfig   `json:"files"`
 	Sockets []*SocketConfig `json:"sockets"`
 }
@@ -85,9 +86,18 @@ func (log Logger) LoadJsonConfiguration(filename string) {
 		os.Exit(1)
 	}
 
-	if lc.Console.Enable {
-		filt, _ := jsonToConsoleLogWriter(filename, lc.Console)
-		log["stdout"] = &Filter{getLogLevel(lc.Console.Level), filt, "DEFAULT"}
+	for _, cc := range lc.Console {
+		if !cc.Enable {
+			continue
+		}
+		if len(cc.Category) == 0 {
+			fmt.Fprintf(os.Stderr, "LoadJsonConfiguration: console category can not be empty in <%s>: ", filename)
+			os.Exit(1)
+		}
+		filt, _ := jsonToConsoleLogWriter(filename, cc)
+		//log["stdout"] = &Filter{getLogLevel(cc.Level), filt, cc.Category}
+		//TODO
+		log[cc.Category] = &Filter{getLogLevel(cc.Level), filt, cc.Category}
 	}
 
 	for _, fc := range lc.Files {

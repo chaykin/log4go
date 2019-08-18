@@ -144,17 +144,6 @@ func NewLogger() Logger {
 
 // Create a new logger with a "stdout" filter configured to send log messages at
 // or above lvl to standard output.
-//
-// DEPRECATED: use NewDefaultLogger instead.
-func NewConsoleLogger(lvl Level) Logger {
-	os.Stderr.WriteString("warning: use of deprecated NewConsoleLogger\n")
-	return Logger{
-		"stdout": &Filter{lvl, NewConsoleLogWriter(), "DEFAULT"},
-	}
-}
-
-// Create a new logger with a "stdout" filter configured to send log messages at
-// or above lvl to standard output.
 func NewDefaultLogger(lvl Level) Logger {
 	return Logger{
 		"stdout": &Filter{lvl, NewConsoleLogWriter(), "DEFAULT"},
