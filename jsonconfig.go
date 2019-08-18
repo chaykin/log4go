@@ -95,8 +95,6 @@ func (log Logger) LoadJsonConfiguration(filename string) {
 			os.Exit(1)
 		}
 		filt, _ := jsonToConsoleLogWriter(filename, cc)
-		//log["stdout"] = &Filter{getLogLevel(cc.Level), filt, cc.Category}
-		//TODO
 		log[cc.Category] = &Filter{getLogLevel(cc.Level), filt, cc.Category}
 	}
 
